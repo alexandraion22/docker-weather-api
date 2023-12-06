@@ -18,7 +18,8 @@ public class CountriesController {
     @PostMapping("")
     public ResponseEntity<String> addCountry(@RequestBody Map<String, String> mapCountry) {
 
-        Countries country = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")), Double.valueOf(mapCountry.get("lon")));
+        Countries country = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")),
+                Double.valueOf(mapCountry.get("lon")));
 
         if (countriesService.saveCountry(country))
             return new ResponseEntity<>("Country added successfully.", HttpStatus.OK);

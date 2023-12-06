@@ -1,10 +1,10 @@
 package com.sprc.tema2.countries;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-@Entity
-public class Countries{
+@Document(collection = "countries")
+public class Countries {
     @Id
     private String nume;
     private Double lat;

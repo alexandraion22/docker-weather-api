@@ -1,4 +1,4 @@
-package com.sprc.tema2.spring.data.mongodb;
+package com.sprc.tema2;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
