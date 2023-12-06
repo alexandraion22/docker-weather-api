@@ -37,19 +37,19 @@ public class CountriesServiceImpl implements CountriesService {
     }
 
     @Override
-    public boolean updateEntryById(Countries country) {
+    public boolean updateEntryById(Countries updatedCountry) {
 
-        Countries countryForId = countriesRepository.findById(country.getId());
+        Countries countryForId = countriesRepository.findById(updatedCountry.getId());
 
         if(countryForId==null)
             return false;
 
         // TODO Poate sa elaborez mai mult totusi
-        if(countryForId.getNume() != country.getNume())
-            if (countriesRepository.findByNume(country.getNume())!=null)
+        if(!countryForId.getNume().equals(updatedCountry.getNume()))
+            if (countriesRepository.findByNume(updatedCountry.getNume())!=null)
                 return false;
 
-        countriesRepository.save(country);
+        countriesRepository.save(updatedCountry);
         return true;
     }
 
@@ -59,7 +59,7 @@ public class CountriesServiceImpl implements CountriesService {
 
         if(countryForId!=null)
         {
-            countriesRepository.deleteById(String.valueOf(id));
+            countriesRepository.deleteById(id);
             return true;
         }
         else

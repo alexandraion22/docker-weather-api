@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 public interface CountriesRepository extends MongoRepository<Countries, String> {
     Countries findByNume(String nume);
     Countries findById(Integer id);
+    void deleteById(Integer id);
 }

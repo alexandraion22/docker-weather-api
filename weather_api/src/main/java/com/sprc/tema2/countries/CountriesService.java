@@ -7,7 +7,7 @@ public interface CountriesService {
 
     List<Countries> getCountries();
 
-    boolean updateEntryById(Countries country);
+    boolean updateEntryById(Countries updatedCountry);
 
     boolean deleteEntryById(Integer id);
 }
