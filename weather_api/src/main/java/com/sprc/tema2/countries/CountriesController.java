@@ -1,4 +1,11 @@
-package main.java.com.sprc.tema2.countries;
+package com.sprc.tema2.countries;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/countries")
@@ -8,13 +15,10 @@ public class CountriesController {
     @Autowired
     private CountriesService countriesService;
 
-    @Autowired
-    private CountriesRepository countriesRepository;
-
     @PostMapping("")
     public ResponseEntity<String> addCountry(@RequestBody Map<String, String> mapCountry) {
 
-        Country country = new Country(map.get("nume"), map.get("lat"), map.get("lon"));
+        Countries country = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")), Double.valueOf(mapCountry.get("lon")));
 
         if (countriesService.saveCountry(country))
             return new ResponseEntity<>("Country added successfully.", HttpStatus.OK);

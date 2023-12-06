@@ -1,24 +1,34 @@
-package main.java.com.sprc.tema2.countries;
+package com.sprc.tema2.countries;
 
-@RestController
-@RequestMapping("/countries")
-@CrossOrigin
-public class Countries {
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
-    @Autowired
-    private CountriesService countriesService;
+@Entity
+public class Countries{
+    @Id
+    private String nume;
+    private Double lat;
+    private Double lon;
 
-    @Autowired
-    private CountriesRepository countriesRepository;
+    public Countries() {
 
-    @PostMapping("")
-    public ResponseEntity<String> addCountry(@RequestBody Map<String, String> mapCountry) {
+    }
 
-        Country country = new Country(map.get("nume"), map.get("lat"), map.get("lon"));
+    public Countries(String nume, Double lat, Double lon) {
+        this.nume = nume;
+        this.lat = lat;
+        this.lon = lon;
+    }
 
-        if (countriesService.saveCountry(country))
-            return new ResponseEntity<>("Country added successfully.", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Country already exists in the database.", HttpStatus.CONFLICT);
+    public String getNume() {
+        return nume;
+    }
+
+    public Double getLat() {
+        return lat;
+    }
+
+    public Double getLon() {
+        return lon;
     }
 }
