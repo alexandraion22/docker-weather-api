@@ -50,8 +50,10 @@ public class CountriesController {
         if(id!=Integer.valueOf(mapCountry.get("id")))
             return new ResponseEntity<>("Path variable not matching the body", HttpStatus.BAD_REQUEST);
 
-        if(countriesService.updateEntryById(id,new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")),
-                Double.valueOf(mapCountry.get("lon")))))
+        Countries updateCountry = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")),Double.valueOf(mapCountry.get("lon")));
+        updateCountry.setId(id);
+
+        if(countriesService.updateEntryById(updateCountry))
             return new ResponseEntity<>("Entry updated successfully.", HttpStatus.OK);
         else
             return new ResponseEntity<>("Id not found or country with the name provided already exists", HttpStatus.NOT_FOUND);

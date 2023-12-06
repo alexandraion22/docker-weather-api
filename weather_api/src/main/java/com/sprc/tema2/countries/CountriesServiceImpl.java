@@ -37,27 +37,27 @@ public class CountriesServiceImpl implements CountriesService {
     }
 
     @Override
-    public boolean updateEntryById(Integer id, Countries country) {
+    public boolean updateEntryById(Countries country) {
 
-        Optional<Countries> countryForId = countriesRepository.findById(String.valueOf(id));
+        Countries countryForId = countriesRepository.findById(country.getId());
 
-        if(countryForId.isEmpty())
+        if(countryForId==null)
             return false;
 
         // TODO Poate sa elaborez mai mult totusi
-        if(countryForId.get().getNume() != country.getNume())
+        if(countryForId.getNume() != country.getNume())
             if (countriesRepository.findByNume(country.getNume())!=null)
                 return false;
-        country.setId(countriesRepository.findById(String.valueOf(id)).get().getId());
+
         countriesRepository.save(country);
         return true;
     }
 
     @Override
     public boolean deleteEntryById(Integer id) {
-        Optional<Countries> countryForId = countriesRepository.findById(String.valueOf(id));
+        Countries countryForId = countriesRepository.findById(id);
 
-        if(countryForId.isPresent())
+        if(countryForId!=null)
         {
             countriesRepository.deleteById(String.valueOf(id));
             return true;
