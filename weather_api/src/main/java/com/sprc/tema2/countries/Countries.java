@@ -6,13 +6,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "countries")
 public class Countries {
     @Id
+    private Integer id;
     private String nume;
     private Double lat;
     private Double lon;
-
-    public Countries() {
-
-    }
 
     public Countries(String nume, Double lat, Double lon) {
         this.nume = nume;
@@ -20,6 +17,10 @@ public class Countries {
         this.lon = lon;
     }
 
+    public Integer getId() {
+        return id;
+    }
+    
     public String getNume() {
         return nume;
     }
@@ -30,5 +31,9 @@ public class Countries {
 
     public Double getLon() {
         return lon;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
