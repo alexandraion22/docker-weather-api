@@ -11,10 +11,10 @@ public class IdsServiceImpl implements  IdsService{
 
     @Override
     public Integer getNextId(String collectionName) {
-        Integer nextId = 0;
+        Integer nextId = 1;
         Ids searchedId = idsRepository.findByCollectionName(collectionName);
         if (searchedId == null)
-            idsRepository.save(new Ids(collectionName, 0));
+            idsRepository.save(new Ids(collectionName, 1));
         else {
             nextId = searchedId.getCurrentId() + 1;
             searchedId.setCurrentId(nextId);
