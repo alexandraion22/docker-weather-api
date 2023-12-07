@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CountriesServiceImpl implements CountriesService {
@@ -24,7 +23,7 @@ public class CountriesServiceImpl implements CountriesService {
             return null;
         else
         {
-            Integer nextId = idsService.getNextId("countries");
+            Integer nextId = idsService.generateSequence("COUNTRIES_SEQ");
             country.setId(nextId);
             countriesRepository.save(country);
             return nextId;

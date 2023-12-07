@@ -1,28 +1,32 @@
 package com.sprc.tema2.ids;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "ids_sequence")
 public class Ids {
 
     @Id
-    String collectionName;
-    Integer currentId;
+    private String id;
 
-    public Ids(String collectionName, Integer currentId) {
-        this.collectionName = collectionName;
-        this.currentId = currentId;
+    private Integer seq;
+
+    public Ids(){};
+
+    public String getId() {
+        return id;
     }
 
-    public void setCurrentId(Integer currentId) {
-        this.currentId = currentId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getCollectionName() {
-        return collectionName;
+    public Integer getSeq() {
+        return seq;
     }
 
-    public int getCurrentId() {
-        return currentId;
+    public void setSeq(Integer seq) {
+        this.seq = seq;
     }
 
 
