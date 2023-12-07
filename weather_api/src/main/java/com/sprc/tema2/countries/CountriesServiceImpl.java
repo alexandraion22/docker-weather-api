@@ -17,18 +17,18 @@ public class CountriesServiceImpl implements CountriesService {
     private IdsService idsService;
 
     @Override
-    public boolean addCountry(Countries country) {
+    public Integer addCountry(Countries country) {
 
         // Verificare unicitate nume tara
         if (countriesRepository.findByNume(country.getNume())!=null)
-            return false;
+            return null;
         else
         {
             Integer nextId = idsService.getNextId("countries");
             country.setId(nextId);
             countriesRepository.save(country);
+            return nextId;
         }
-        return true;
     }
 
     @Override
