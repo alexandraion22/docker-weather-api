@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +19,12 @@ public class CountriesController {
     private CountriesService countriesService;
 
     @PostMapping
-    public ResponseEntity<Integer> addCountry(@RequestBody Map<String, String> mapCountry) {
+    public ResponseEntity<Map<String,Integer>> addCountry(@RequestBody Map<String, String> mapCountry) {
+
+        Map<String,Integer> mapResult = new HashMap<>();
 
         if(mapCountry.get("nume")== null || mapCountry.get("lat") == null || mapCountry.get("lon") == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(mapResult, HttpStatus.BAD_REQUEST);
 
         // TODO verificare daca lat/lon contin litere
 
@@ -31,9 +34,12 @@ public class CountriesController {
        Integer resultId = countriesService.addCountry(country);
 
        if(resultId!=null)
-           return new ResponseEntity<>(resultId, HttpStatus.CREATED);
+       {
+           mapResult.put("id",resultId);
+           return new ResponseEntity<>(mapResult, HttpStatus.CREATED);
+       }
        else
-           return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+           return new ResponseEntity<>(mapResult, HttpStatus.CONFLICT);
     }
 
     @GetMapping
