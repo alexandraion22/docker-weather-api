@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class CitiesServiceImpl implements CitiesService{
+public class CitiesServiceImpl implements CitiesService {
 
     @Autowired
     CitiesRepository citiesRepository;
@@ -24,11 +24,11 @@ public class CitiesServiceImpl implements CitiesService{
     public Integer addCity(Cities city) {
 
         // Verificare existenta idTara
-        if(countriesService.getEntryById(city.getIdTara())!=null)
+        if (countriesService.getEntryById(city.getIdTara()) == null)
             return -1;
 
         // Verificare unicitate pereche (idTara,nume)
-        if (citiesRepository.findByIdTaraAndNume(city.getIdTara(),city.getNume())!=null)
+        if (citiesRepository.findByIdTaraAndNume(city.getIdTara(), city.getNume()) != null)
             return null;
 
         // Setare id si returnare
@@ -45,7 +45,7 @@ public class CitiesServiceImpl implements CitiesService{
 
     @Override
     public List<Cities> getCitiesByCountryId(Integer id) {
-        return citiesRepository.findAllByIdTara();
+        return citiesRepository.findAllByIdTara(id);
     }
 
     @Override
@@ -53,14 +53,16 @@ public class CitiesServiceImpl implements CitiesService{
         Cities citiesForId = citiesRepository.findById(updatedCity.getId());
 
         // Verificarea daca exista orasul cu id-ul dat
-        if(citiesForId==null)
+        if (citiesForId == null)
             return false;
 
-        /* Verifica daca deja exista alta intrare cu (idTara,numeOras) in
+        /*
+         * Verifica daca deja exista alta intrare cu (idTara,numeOras) in
          * care se modifica (daca se modifica) numele sau idTara pentru id-ul specificat
          */
-        if(!citiesForId.getNume().equals(updatedCity.getNume()) || !citiesForId.getIdTara().equals(updatedCity.getIdTara()))
-            if (citiesRepository.findByIdTaraAndNume(updatedCity.getIdTara(),updatedCity.getNume())!=null)
+        if (!citiesForId.getNume().equals(updatedCity.getNume())
+                || !citiesForId.getIdTara().equals(updatedCity.getIdTara()))
+            if (citiesRepository.findByIdTaraAndNume(updatedCity.getIdTara(), updatedCity.getNume()) != null)
                 return false;
 
         citiesRepository.save(updatedCity);
@@ -69,7 +71,7 @@ public class CitiesServiceImpl implements CitiesService{
 
     @Override
     public boolean deleteEntryById(Integer id) {
-        if(citiesRepository.findById(id)==null)
+        if (citiesRepository.findById(id) == null)
             return false;
         citiesRepository.deleteById(id);
         return true;
