@@ -8,12 +8,8 @@ import java.util.List;
 @Repository
 public interface CitiesRepository extends MongoRepository<Cities, String> {
     Cities findByIdTaraAndNume(Integer idTara, String nume);
-
     List<Cities> findAllByIdTara(Integer id);
-
     Cities findById(Integer id);
-
     void deleteById(Integer id);
-
     Cities findByNume(String nume);
 }

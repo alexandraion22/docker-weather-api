@@ -23,7 +23,7 @@ public class CitiesServiceImpl implements CitiesService {
     @Override
     public Integer addCity(Cities city) {
 
-        // Verificare existenta idTara
+        // Verificare existenta tara cu idTara
         if (countriesService.getEntryById(city.getIdTara()) == null)
             return -1;
 
@@ -76,4 +76,10 @@ public class CitiesServiceImpl implements CitiesService {
         citiesRepository.deleteById(id);
         return true;
     }
+
+    @Override
+    public Cities getEntryById(Integer id) {
+        return citiesRepository.findById(id);
+    }
+
 }

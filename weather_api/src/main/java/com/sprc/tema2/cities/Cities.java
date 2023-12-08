@@ -1,9 +1,6 @@
 package com.sprc.tema2.cities;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 public class Cities {
     @Id
