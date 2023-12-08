@@ -1,11 +1,13 @@
 package com.sprc.tema2.countries;
 
+import com.sprc.utils.UtilsHw;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,27 +21,23 @@ public class CountriesController {
     private CountriesService countriesService;
 
     @PostMapping
-    public ResponseEntity<Map<String,Integer>> addCountry(@RequestBody Map<String, String> mapCountry) {
+    public ResponseEntity<Map<String,Integer>> addCountry(@RequestBody Map<String, String> map) {
 
-        Map<String,Integer> mapResult = new HashMap<>();
+        if (UtilsHw.hasNullParameters(map, Arrays.asList("id", "nume", "lat", "lon")))
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        if(mapCountry.get("nume")== null || mapCountry.get("lat") == null || mapCountry.get("lon") == null)
-            return new ResponseEntity<>(mapResult, HttpStatus.BAD_REQUEST);
+        Countries country = new Countries(map.get("nume"), Double.valueOf(map.get("lat")),
+                Double.valueOf(map.get("lon")));
 
-        // TODO verificare daca lat/lon contin litere
+        Integer resultId = countriesService.addCountry(country);
 
-        Countries country = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")),
-                Double.valueOf(mapCountry.get("lon")));
-
-       Integer resultId = countriesService.addCountry(country);
-
-       if(resultId!=null)
-       {
-           mapResult.put("id",resultId);
-           return new ResponseEntity<>(mapResult, HttpStatus.CREATED);
-       }
-       else
-           return new ResponseEntity<>(mapResult, HttpStatus.CONFLICT);
+        // Return id al noii intrari in tabela (daca s-a creat)
+        if(resultId!=null)
+           return new ResponseEntity<>(new HashMap<>() {{
+               put("id", resultId);
+           }}, HttpStatus.CREATED);
+        else
+           return new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
     @GetMapping
@@ -48,31 +46,31 @@ public class CountriesController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateById(@PathVariable("id") Integer id, @RequestBody Map<String, String> mapCountry){
+    public ResponseEntity<String> updateById(@PathVariable("id") Integer id, @RequestBody Map<String, String> map){
 
-        if(mapCountry.get("id") == null || mapCountry.get("nume")== null || mapCountry.get("lat") == null || mapCountry.get("lon") == null)
-            return new ResponseEntity<>("Missing Request Parameters", HttpStatus.BAD_REQUEST);
+        if (UtilsHw.hasNullParameters(map, Arrays.asList("id", "nume", "lat", "lon")))
+            return new ResponseEntity<>("Missing parameters in request body.", HttpStatus.BAD_REQUEST);
 
-        // TODO verificare daca id,lat,lon sunt valide
+        // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
+        if(id!=Integer.valueOf(map.get("id")))
+            return new ResponseEntity<>("Path variable id and the id in the request body do not match.",HttpStatus.BAD_REQUEST);
 
-        if(id!=Integer.valueOf(mapCountry.get("id")))
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-
-        Countries updateCountry = new Countries(mapCountry.get("nume"), Double.valueOf(mapCountry.get("lat")),Double.valueOf(mapCountry.get("lon")));
+        // Creare obiect cu parmetrii din request body
+        Countries updateCountry = new Countries(map.get("nume"), Double.valueOf(map.get("lat")),Double.valueOf(map.get("lon")));
         updateCountry.setId(id);
 
         if(countriesService.updateEntryById(updateCountry))
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Country updated successfully.",HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity deleteById(@PathVariable("id") Integer id){
+    public ResponseEntity<String> deleteById(@PathVariable("id") Integer id){
 
         if(countriesService.deleteEntryById(id))
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity<>("Country and adjacent cities and temperatures were deleted successfully.",HttpStatus.OK);
         else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
     }
 }
