@@ -2,14 +2,12 @@ package com.sprc.tema2.temperatures;
 
 import com.sprc.utils.UtilsHw;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/temperatures")
@@ -40,8 +38,26 @@ public class TemperaturesController {
             return new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 
-    @GetMapping
-    public ResponseEntity<List<Temperatures>> getTemperatures() {
-        return new ResponseEntity<>(temperaturesService.getTemperatures(), HttpStatus.OK);
+    @GetMapping("/api/temperatures")
+    public ResponseEntity<List<Temperatures>> getTemperatures(
+            @RequestParam(required = false) Double lat,
+            @RequestParam(required = false) Double lon,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date until
+    )
+    {
+        return new ResponseEntity<>(temperaturesService.getTemperatures(lat,lon,from,until), HttpStatus.OK);
     }
+
+    @GetMapping("/api/temperatures/cities/{id}")
+    public ResponseEntity<List<Temperatures>> getCityTemperatures(
+            @PathVariable("id") Integer cityId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date until
+    ){
+        if(cityId == null)
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(temperaturesService.getCityTemperatures(cityId,from,until), HttpStatus.OK);
+    }
+
 }

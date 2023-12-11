@@ -10,12 +10,12 @@ public class Temperatures {
     private Integer id;
     private Integer idOras;
     private Double valoare;
-    LocalDateTime timestamp;
+    Date timestamp;
 
     public Temperatures(Integer idOras, Double valoare){
         this.idOras = idOras;
         this.valoare = valoare;
-        this.timestamp = LocalDateTime.now();
+        this.timestamp = new Date();
     }
 
     public void setId(Integer id) {
@@ -34,7 +34,7 @@ public class Temperatures {
         return valoare;
     }
 
-    public LocalDateTime getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 }
