@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TemperaturesServiceImpl implements TemperaturesService {
@@ -28,7 +29,8 @@ public class TemperaturesServiceImpl implements TemperaturesService {
             return -1;
 
         // Verificare unicitate pereche (idOras, timestamp)
-        if (temperaturesRepository.findByIdOrasAndTimestamp(temperature.getIdOras(), temperature.getTimestamp()) != null)
+        if (temperaturesRepository.findByIdOrasAndTimestamp(temperature.getIdOras(),
+                temperature.getTimestamp()) != null)
             return null;
 
         // Setare id si returnare
@@ -40,26 +42,31 @@ public class TemperaturesServiceImpl implements TemperaturesService {
 
     @Override
     public List<Temperatures> getTemperatures(Double lat, Double lon, Date from, Date until) {
-        List<Temperatures> temperaturesByLatAndLon;
+        List<Temperatures> temperatures = temperaturesRepository.findAll();
 
-        if(lat == null)
-        {
-            if (lon == null)
-                temperaturesByLatAndLon = temperaturesRepository.findAll();
-            else
-                temperaturesByLatAndLon = temperaturesRepository.findAllByLon(lon);
-        }
+        List<Temperatures> temperaturesFilteredByLatAndLon;
+
+        if (lat != null && lon != null)
+            temperaturesFilteredByLatAndLon = temperatures.stream()
+                    .filter(t -> (citiesService.getEntryById(t.getIdOras()).getLat() == lat
+                            && citiesService.getEntryById(t.getIdOras()).getLon() == lon))
+                    .collect(Collectors.toList());
         else {
-            if (lon == null)
-                temperaturesByLatAndLon = temperaturesRepository.findAllByLat(lat);
-            else
-                temperaturesByLatAndLon = temperaturesRepository.findAllByLatAndLon(lat,lon);
+            if (lat != null)
+                temperaturesFilteredByLatAndLon = temperatures.stream()
+                        .filter(t -> citiesService.getEntryById(t.getIdOras()).getLat() == lat)
+                        .collect(Collectors.toList());
+            else {
+                if (lon != null)
+                    temperaturesFilteredByLatAndLon = temperatures.stream()
+                            .filter(t -> citiesService.getEntryById(t.getIdOras()).getLon() == lon)
+                            .collect(Collectors.toList());
+                else
+                    temperaturesFilteredByLatAndLon = temperatures;
+            }
         }
 
-        if(from == null && until == null)
-            return temperaturesByLatAndLon;
-
-        return UtilsHw.filterListByFromAndUntil(temperaturesByLatAndLon,from,until);
+        return UtilsHw.filterListByFromAndUntil(temperaturesFilteredByLatAndLon, from, until);
     }
 
     @Override
