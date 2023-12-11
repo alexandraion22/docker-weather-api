@@ -15,25 +15,28 @@ public class UtilsHw {
         return false;
     }
 
-    public static List<Temperatures> filterListByFromAndUntil(List<Temperatures> temperatures, Date from, Date until){
-       if (from!=null && until!=null)
-           return temperatures.stream()
-                .filter(t -> (isBeforeOrEqual(t.getTimestamp(),until) && isAfterOrEqual(t.getTimestamp(),from))).collect(Collectors.toList());
+    public static List<Temperatures> filterListByFromAndUntil(List<Temperatures> temperatures, Date from, Date until) {
+        if (from != null && until != null)
+            return temperatures.stream()
+                    .filter(t -> (isBeforeOrEqual(t.getTimestamp(), until) && isAfterOrEqual(t.getTimestamp(), from)))
+                    .collect(Collectors.toList());
 
-       if (from!=null)
-           return temperatures.stream().filter(t -> isAfterOrEqual(t.getTimestamp(),from)).collect(Collectors.toList());
+        if (from != null)
+            return temperatures.stream().filter(t -> isAfterOrEqual(t.getTimestamp(), from))
+                    .collect(Collectors.toList());
 
-       if (until!=null)
-           return temperatures.stream().filter(t -> isBeforeOrEqual(t.getTimestamp(),until)).collect(Collectors.toList());
+        if (until != null)
+            return temperatures.stream().filter(t -> isBeforeOrEqual(t.getTimestamp(), until))
+                    .collect(Collectors.toList());
 
-       return temperatures;
+        return temperatures;
     }
 
-    public static Boolean isBeforeOrEqual(Date when, Date until){
-        return when.before(until) || when.equals(until);
+    public static Boolean isBeforeOrEqual(Date when, Date until) {
+        return when.before(until);
     }
 
-    public static Boolean isAfterOrEqual(Date when, Date from){
+    public static Boolean isAfterOrEqual(Date when, Date from) {
         return when.after(from) || when.equals(from);
     }
 }

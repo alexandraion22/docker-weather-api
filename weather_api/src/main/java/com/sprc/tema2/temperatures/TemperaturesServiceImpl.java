@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Calendar;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,26 +45,29 @@ public class TemperaturesServiceImpl implements TemperaturesService {
     public List<Temperatures> getTemperatures(Double lat, Double lon, Date from, Date until) {
         List<Temperatures> temperatures = temperaturesRepository.findAll();
 
-        List<Temperatures> temperaturesFilteredByLatAndLon;
+        List<Temperatures> temperaturesFilteredByLatAndLon = temperatures;
+
+        if (until != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(until);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            until = calendar.getTime();
+        }
 
         if (lat != null && lon != null)
             temperaturesFilteredByLatAndLon = temperatures.stream()
-                    .filter(t -> (citiesService.getEntryById(t.getIdOras()).getLat() == lat
-                            && citiesService.getEntryById(t.getIdOras()).getLon() == lon))
+                    .filter(t -> (citiesService.getEntryById(t.getIdOras()).getLat().equals(lat)
+                            && citiesService.getEntryById(t.getIdOras()).getLon().equals(lon)))
                     .collect(Collectors.toList());
         else {
             if (lat != null)
                 temperaturesFilteredByLatAndLon = temperatures.stream()
-                        .filter(t -> citiesService.getEntryById(t.getIdOras()).getLat() == lat)
+                        .filter(t -> citiesService.getEntryById(t.getIdOras()).getLat().equals(lat))
                         .collect(Collectors.toList());
-            else {
-                if (lon != null)
-                    temperaturesFilteredByLatAndLon = temperatures.stream()
-                            .filter(t -> citiesService.getEntryById(t.getIdOras()).getLon() == lon)
-                            .collect(Collectors.toList());
-                else
-                    temperaturesFilteredByLatAndLon = temperatures;
-            }
+            else if (lon != null)
+                temperaturesFilteredByLatAndLon = temperatures.stream()
+                        .filter(t -> citiesService.getEntryById(t.getIdOras()).getLon().equals(lon))
+                        .collect(Collectors.toList());
         }
 
         return UtilsHw.filterListByFromAndUntil(temperaturesFilteredByLatAndLon, from, until);
@@ -71,6 +75,13 @@ public class TemperaturesServiceImpl implements TemperaturesService {
 
     @Override
     public List<Temperatures> getCityTemperatures(Integer cityId, Date from, Date until) {
+        if (until != null) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(until);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            until = calendar.getTime();
+        }
+
         return UtilsHw.filterListByFromAndUntil(temperaturesRepository.findAllByIdOras(cityId), from, until);
     }
 }
