@@ -26,20 +26,16 @@ public class CountriesController {
         if (UtilsHw.hasNullParameters(map, Arrays.asList("nume", "lat", "lon")))
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        Countries country = new Countries(map.get("nume"), Double.valueOf(map.get("lat")),
-                Double.valueOf(map.get("lon")));
+        try {
+            Countries country = new Countries(map.get("nume"), Double.parseDouble(map.get("lat")),
+                    Double.parseDouble(map.get("lon")));
 
-        Integer resultId = countriesService.addCountry(country);
-
-        // Return id al noii intrari in tabela (daca s-a creat)
-        if (resultId != null)
-            return new ResponseEntity<>(new HashMap<>() {
-                {
-                    put("id", resultId);
-                }
-            }, HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            Integer resultId = countriesService.addCountry(country);
+            return UtilsHw.mapId(resultId);
+        }
+        catch(NumberFormatException nfe){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
@@ -53,20 +49,25 @@ public class CountriesController {
         if (UtilsHw.hasNullParameters(map, Arrays.asList("id", "nume", "lat", "lon")))
             return new ResponseEntity<>("Missing parameters in request body.", HttpStatus.BAD_REQUEST);
 
-        // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
-        if (id != Integer.valueOf(map.get("id")))
-            return new ResponseEntity<>("Path variable id and the id in the request body do not match.",
-                    HttpStatus.BAD_REQUEST);
+        try {
+            // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
+            if (id != Integer.parseInt(map.get("id")))
+                return new ResponseEntity<>("Path variable id and the id in the request body do not match.",
+                        HttpStatus.BAD_REQUEST);
 
-        // Creare obiect cu parmetrii din request body
-        Countries updateCountry = new Countries(map.get("nume"), Double.valueOf(map.get("lat")),
-                Double.valueOf(map.get("lon")));
-        updateCountry.setId(id);
+            // Creare obiect cu parametrii din request body
+            Countries updateCountry = new Countries(map.get("nume"), Double.parseDouble(map.get("lat")),
+                    Double.parseDouble(map.get("lon")));
+            updateCountry.setId(id);
 
-        if (countriesService.updateEntryById(updateCountry))
-            return new ResponseEntity<>("Country updated successfully.", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
+            if (countriesService.updateEntryById(updateCountry))
+                return new ResponseEntity<>("Country updated successfully.", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
+        }
+        catch(NumberFormatException nfe){
+            return new ResponseEntity<>("Wrong format of parameters.",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")

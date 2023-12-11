@@ -37,4 +37,8 @@ public class Temperatures {
     public Date getTimestamp() {
         return timestamp;
     }
+
+    public void setTimestamp(Date timestamp) {
+        this.timestamp = timestamp;
+    }
 }

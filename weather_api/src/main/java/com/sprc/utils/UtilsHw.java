@@ -1,8 +1,11 @@
 package com.sprc.utils;
 
 import com.sprc.tema2.temperatures.Temperatures;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -38,5 +41,18 @@ public class UtilsHw {
 
     public static Boolean isAfterOrEqual(Date when, Date from) {
         return when.after(from) || when.equals(from);
+    }
+
+    public static ResponseEntity<Map<String, Integer>> mapId(Integer resultId){
+        if (resultId != null) {
+            if (resultId == -1)
+                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new HashMap<>() {
+                {
+                    put("id", resultId);
+                }
+            }, HttpStatus.CREATED);
+        } else
+            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
     }
 }

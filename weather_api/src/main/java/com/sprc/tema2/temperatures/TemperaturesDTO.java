@@ -7,10 +7,10 @@ public class TemperaturesDTO {
     private Double valoare;
     Date timestamp;
 
-    public TemperaturesDTO(Integer id, Double valoare, Date timestamp) {
-        this.id = id;
-        this.valoare = valoare;
-        this.timestamp = timestamp;
+    public TemperaturesDTO(Temperatures temperatures) {
+        this.id = temperatures.getId();
+        this.valoare = temperatures.getValoare();
+        this.timestamp = temperatures.getTimestamp();
     }
 
     public Integer getId() {

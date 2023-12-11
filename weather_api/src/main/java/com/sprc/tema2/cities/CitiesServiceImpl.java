@@ -1,8 +1,10 @@
 package com.sprc.tema2.cities;
 
-import com.sprc.tema2.countries.Countries;
 import com.sprc.tema2.countries.CountriesService;
 import com.sprc.tema2.ids.IdsService;
+import com.sprc.tema2.temperatures.Temperatures;
+import com.sprc.tema2.temperatures.TemperaturesRepository;
+import com.sprc.tema2.temperatures.TemperaturesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +14,19 @@ import java.util.List;
 public class CitiesServiceImpl implements CitiesService {
 
     @Autowired
-    CitiesRepository citiesRepository;
-
-    @Autowired
     CountriesService countriesService;
 
     @Autowired
+    TemperaturesService temperaturesService;
+
+    @Autowired
     IdsService idsService;
+
+    @Autowired
+    CitiesRepository citiesRepository;
+
+    @Autowired
+    TemperaturesRepository temperaturesRepository;
 
     @Override
     public Integer addCity(Cities city) {
@@ -73,6 +81,12 @@ public class CitiesServiceImpl implements CitiesService {
     public boolean deleteEntryById(Integer id) {
         if (citiesRepository.findById(id) == null)
             return false;
+
+        // Stergerea in cascada a tuturor temperaturilor corespuznatoare id-ului orasului
+        List<Temperatures> temperaturesByCities = temperaturesService.getTemperaturesByCityId(id);
+        for ( Temperatures temperatures : temperaturesByCities)
+            temperaturesService.deleteEntryById(temperatures.getId());
+
         citiesRepository.deleteById(id);
         return true;
     }

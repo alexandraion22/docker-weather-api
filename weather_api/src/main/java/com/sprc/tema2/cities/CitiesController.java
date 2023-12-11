@@ -1,7 +1,5 @@
 package com.sprc.tema2.cities;
 
-import com.sprc.tema2.countries.Countries;
-import com.sprc.tema2.countries.CountriesService;
 import com.sprc.utils.UtilsHw;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,21 +22,16 @@ public class CitiesController {
         if (UtilsHw.hasNullParameters(map, Arrays.asList("idTara", "nume", "lat", "lon")))
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        Cities city = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"), Double.valueOf(map.get("lat")),
-                Double.valueOf(map.get("lon")));
+        try {
+            Cities city = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"), Double.valueOf(map.get("lat")),
+                    Double.valueOf(map.get("lon")));
 
-        Integer resultId = citiesService.addCity(city);
-
-        if (resultId != null) {
-            if (resultId == -1)
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(new HashMap<>() {
-                {
-                    put("id", resultId);
-                }
-            }, HttpStatus.CREATED);
-        } else
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+            Integer resultId = citiesService.addCity(city);
+            return UtilsHw.mapId(resultId);
+        }
+        catch(NumberFormatException nfe) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
@@ -57,20 +50,25 @@ public class CitiesController {
         if (UtilsHw.hasNullParameters(map, Arrays.asList("id", "idTara", "nume", "lat", "lon")))
             return new ResponseEntity<>("Missing parameters in request body.", HttpStatus.BAD_REQUEST);
 
-        // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
-        if (id != Integer.valueOf(map.get("id")))
-            return new ResponseEntity<>("Path variable id and the id in the request body do not match.",
-                    HttpStatus.BAD_REQUEST);
+        try {
+            // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
+            if (id != Integer.parseInt(map.get("id")))
+                return new ResponseEntity<>("Path variable id and the id in the request body do not match.",
+                        HttpStatus.BAD_REQUEST);
 
-        // Creare obiect cu parmetrii din request body
-        Cities updatedCity = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"),
-                Double.valueOf(map.get("lat")), Double.valueOf(map.get("lon")));
-        updatedCity.setId(id);
+            // Creare obiect cu parametrii din request body
+            Cities updatedCity = new Cities(Integer.parseInt(map.get("idTara")), map.get("nume"),
+                    Double.parseDouble(map.get("lat")), Double.parseDouble(map.get("lon")));
+            updatedCity.setId(id);
 
-        if (citiesService.updateEntryById(updatedCity))
-            return new ResponseEntity<>("City updated successfully.", HttpStatus.OK);
-        else
-            return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+            if (citiesService.updateEntryById(updatedCity))
+                return new ResponseEntity<>("City updated successfully.", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+        }
+        catch(NumberFormatException nfe){
+            return new ResponseEntity<>("Wrong format of parameters.",HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/{id}")

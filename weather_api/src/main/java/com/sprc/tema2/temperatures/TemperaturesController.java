@@ -1,5 +1,6 @@
 package com.sprc.tema2.temperatures;
 
+import com.sprc.tema2.cities.Cities;
 import com.sprc.utils.UtilsHw;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +25,16 @@ public class TemperaturesController {
         if (UtilsHw.hasNullParameters(map, Arrays.asList("idOras", "valoare")))
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
-        Temperatures temperatures = new Temperatures(Integer.valueOf(map.get("idOras")),
-                Double.valueOf(map.get("valoare")));
-
-        Integer resultId = temperaturesService.addTemperature(temperatures);
-
-        if (resultId != null) {
-            if (resultId == -1)
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            return new ResponseEntity<>(new HashMap<>() {
-                {
-                    put("id", resultId);
-                }
-            }, HttpStatus.CREATED);
-        } else
-            return new ResponseEntity<>(null, HttpStatus.CONFLICT);
+        try {
+            Temperatures temperatures = new Temperatures(Integer.parseInt(map.get("idOras")),
+                    Double.parseDouble(map.get("valoare")));
+            Integer resultId = temperaturesService.addTemperature(temperatures);
+            return UtilsHw.mapId(resultId);
+        }
+        catch (NumberFormatException nfe)
+        {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping
@@ -49,9 +45,7 @@ public class TemperaturesController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date until) {
 
         List<TemperaturesDTO> temperaturesDTOList = temperaturesService.getTemperatures(lat, lon, from, until).stream()
-                .map(temp -> {
-                    return new TemperaturesDTO(temp.getId(), temp.getValoare(), temp.getTimestamp());
-                })
+                .map(temp -> new TemperaturesDTO(temp))
                 .collect(Collectors.toList());
 
         return new ResponseEntity<>(temperaturesDTOList, HttpStatus.OK);
@@ -62,17 +56,58 @@ public class TemperaturesController {
             @PathVariable("id") Integer cityId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date until) {
-        if (cityId == null)
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         List<TemperaturesDTO> temperaturesDTOList = temperaturesService.getCityTemperatures(cityId, from, until)
-                .stream()
-                .map(temp -> {
-                    return new TemperaturesDTO(temp.getId(), temp.getValoare(), temp.getTimestamp());
-                })
+                .stream().map(temp -> new TemperaturesDTO(temp))
                 .collect(Collectors.toList());
-
         return new ResponseEntity<>(temperaturesDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/countries/{id}")
+    public ResponseEntity<List<TemperaturesDTO>> getCountryTemperatures(
+            @PathVariable("id") Integer countryId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date until) {
+
+        List<TemperaturesDTO> temperaturesDTOList = temperaturesService.getCountryTemperatures(countryId, from, until)
+                .stream().map(temp -> new TemperaturesDTO(temp))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(temperaturesDTOList, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateById(@PathVariable("id") Integer id, @RequestBody Map<String, String> map) {
+
+        if (UtilsHw.hasNullParameters(map, Arrays.asList("id", "idOras", "valoare")))
+            return new ResponseEntity<>("Missing parameters in request body.", HttpStatus.BAD_REQUEST);
+
+        try {
+            // Verificarea id-ului din PathVariable sa corespunda cu id-ul din body
+            if (id != Integer.parseInt(map.get("id")))
+                return new ResponseEntity<>("Path variable id and the id in the request body do not match.",
+                        HttpStatus.BAD_REQUEST);
+
+            // Creare obiect cu parametrii din request body
+            Temperatures updateTemperature = new Temperatures(Integer.parseInt(map.get("idOras")),Double.parseDouble(map.get("valoare")));
+            updateTemperature.setId(id);
+
+            if (temperaturesService.updateEntryById(updateTemperature))
+                return new ResponseEntity<>("Temperature updated successfully.", HttpStatus.OK);
+            else
+                return new ResponseEntity<>("Temperature not found.", HttpStatus.NOT_FOUND);
+        }
+        catch(NumberFormatException nfe){
+            return new ResponseEntity<>("Wrong format of parameters.",HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable("id") Integer id) {
+
+        if (temperaturesService.deleteEntryById(id))
+            return new ResponseEntity<>(HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 }
