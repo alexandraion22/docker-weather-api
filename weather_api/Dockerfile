@@ -1,11 +1,11 @@
-# Stage 1: Build stage
+# Build stage
 FROM maven:3.8.5-openjdk-17 AS builder
 
 WORKDIR /weather_api
 COPY . .
 RUN mvn clean install
 
-# Stage 2: Runtime stage
+# Runtime stage
 FROM openjdk:17-jdk-slim
 
 WORKDIR /weather_api

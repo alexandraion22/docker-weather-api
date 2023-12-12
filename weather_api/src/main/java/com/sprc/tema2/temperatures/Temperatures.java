@@ -2,7 +2,6 @@ package com.sprc.tema2.temperatures;
 
 import org.springframework.data.annotation.Id;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 public class Temperatures {

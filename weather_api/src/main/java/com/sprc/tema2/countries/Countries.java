@@ -17,10 +17,13 @@ public class Countries {
         this.lon = lon;
     }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
     public Integer getId() {
         return id;
     }
-    
+
     public String getNume() {
         return nume;
     }
@@ -31,9 +34,5 @@ public class Countries {
 
     public Double getLon() {
         return lon;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 }
