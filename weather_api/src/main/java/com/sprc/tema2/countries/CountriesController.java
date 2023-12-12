@@ -66,7 +66,7 @@ public class CountriesController {
                 if (result == 0)
                     return new ResponseEntity<>("Country not found.", HttpStatus.NOT_FOUND);
                 else
-                    return new ResponseEntity<>("Country in update, pair already exists.", HttpStatus.CONFLICT);
+                    return new ResponseEntity<>("Conflict in update, pair already exists.", HttpStatus.CONFLICT);
             }
         } catch (NumberFormatException nfe) {
             return new ResponseEntity<>("Wrong format of parameters.", HttpStatus.BAD_REQUEST);

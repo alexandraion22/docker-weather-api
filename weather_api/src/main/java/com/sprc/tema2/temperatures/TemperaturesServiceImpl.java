@@ -115,13 +115,13 @@ public class TemperaturesServiceImpl implements TemperaturesService {
         if (temperatureForId == null)
             return 0;
 
-        if (citiesService.getEntryById(updateTemperature.getId()) != null)
+        if (citiesService.getEntryById(updateTemperature.getIdOras()) == null)
             return 0;
 
         updateTemperature.setTimestamp(temperatureForId.getTimestamp());
         /*
          * Verifica daca deja exista alta intrare cu (idOras,timestamp) in
-         * care se modifica (daca se modifica) numele sau idTara pentru id-ul specificat
+         * care se modifica (daca se modifica)
          */
         if (!temperatureForId.getIdOras().equals(updateTemperature.getIdOras())
                 || !temperatureForId.getTimestamp().equals(updateTemperature.getTimestamp()))

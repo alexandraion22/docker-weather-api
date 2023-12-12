@@ -79,7 +79,6 @@ public class CitiesController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteById(@PathVariable("id") Integer id) {
-
         if (citiesService.deleteEntryById(id))
             return new ResponseEntity<>(HttpStatus.OK);
         else

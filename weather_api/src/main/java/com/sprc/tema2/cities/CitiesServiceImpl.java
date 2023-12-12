@@ -64,7 +64,7 @@ public class CitiesServiceImpl implements CitiesService {
         if (citiesForId == null)
             return 0;
 
-        if (countriesService.getEntryById(updatedCity.getId()))
+        if (countriesService.getEntryById(updatedCity.getIdTara()) == null)
             return 0;
         /*
          * Verifica daca deja exista alta intrare cu (idTara,numeOras) in
