@@ -9,7 +9,10 @@ import java.util.List;
 @Repository
 public interface TemperaturesRepository extends MongoRepository<Temperatures, String> {
     Temperatures findByIdOrasAndTimestamp(Integer idOras, Date timestamp);
+
     List<Temperatures> findAllByIdOras(Integer isOras);
+
     Temperatures findById(Integer id);
+
     void deleteById(Integer id);
 }

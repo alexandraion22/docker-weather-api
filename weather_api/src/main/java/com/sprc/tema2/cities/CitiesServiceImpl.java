@@ -57,13 +57,15 @@ public class CitiesServiceImpl implements CitiesService {
     }
 
     @Override
-    public boolean updateEntryById(Cities updatedCity) {
+    public Integer updateEntryById(Cities updatedCity) {
         Cities citiesForId = citiesRepository.findById(updatedCity.getId());
 
         // Verificarea daca exista orasul cu id-ul dat
         if (citiesForId == null)
-            return false;
+            return 0;
 
+        if (countriesService.getEntryById(updatedCity.getId()))
+            return 0;
         /*
          * Verifica daca deja exista alta intrare cu (idTara,numeOras) in
          * care se modifica (daca se modifica) numele sau idTara pentru id-ul specificat
@@ -71,10 +73,10 @@ public class CitiesServiceImpl implements CitiesService {
         if (!citiesForId.getNume().equals(updatedCity.getNume())
                 || !citiesForId.getIdTara().equals(updatedCity.getIdTara()))
             if (citiesRepository.findByIdTaraAndNume(updatedCity.getIdTara(), updatedCity.getNume()) != null)
-                return false;
+                return -1;
 
         citiesRepository.save(updatedCity);
-        return true;
+        return 1;
     }
 
     @Override
@@ -82,9 +84,10 @@ public class CitiesServiceImpl implements CitiesService {
         if (citiesRepository.findById(id) == null)
             return false;
 
-        // Stergerea in cascada a tuturor temperaturilor corespuznatoare id-ului orasului
+        // Stergerea in cascada a tuturor temperaturilor corespuznatoare id-ului
+        // orasului
         List<Temperatures> temperaturesByCities = temperaturesService.getTemperaturesByCityId(id);
-        for ( Temperatures temperatures : temperaturesByCities)
+        for (Temperatures temperatures : temperaturesByCities)
             temperaturesService.deleteEntryById(temperatures.getId());
 
         citiesRepository.deleteById(id);

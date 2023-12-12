@@ -24,7 +24,7 @@ public class CountriesServiceImpl implements CountriesService {
     public Integer addCountry(Countries country) {
 
         // Verificare unicitate nume tara
-        if (countriesRepository.findByNume(country.getNume())!=null)
+        if (countriesRepository.findByNume(country.getNume()) != null)
             return null;
 
         Integer nextId = idsService.generateSequence("COUNTRIES_SEQ");
@@ -39,32 +39,33 @@ public class CountriesServiceImpl implements CountriesService {
     }
 
     @Override
-    public boolean updateEntryById(Countries updatedCountry) {
+    public Integer updateEntryById(Countries updatedCountry) {
 
         Countries countryForId = countriesRepository.findById(updatedCountry.getId());
 
-        if(countryForId==null)
-            return false;
+        if (countryForId == null)
+            return 0;
 
-        /* Verifica daca deja exista alta intrare cu numele tarii in
+        /*
+         * Verifica daca deja exista alta intrare cu numele tarii in
          * care se modifica (daca se modifica) numele pentru id-ul specificat
          */
-        if(!countryForId.getNume().equals(updatedCountry.getNume()))
-            if (countriesRepository.findByNume(updatedCountry.getNume())!=null)
-                return false;
+        if (!countryForId.getNume().equals(updatedCountry.getNume()))
+            if (countriesRepository.findByNume(updatedCountry.getNume()) != null)
+                return -1;
 
         countriesRepository.save(updatedCountry);
-        return true;
+        return 1;
     }
 
     @Override
     public boolean deleteEntryById(Integer id) {
-        if(countriesRepository.findById(id)==null)
+        if (countriesRepository.findById(id) == null)
             return false;
 
         // Stergerea in cascada a tuturor oraselor corespuznatoare id-ului tarii
         List<Cities> citiesByCountry = citiesService.getCitiesByCountryId(id);
-        for ( Cities city : citiesByCountry)
+        for (Cities city : citiesByCountry)
             citiesService.deleteEntryById(city.getId());
 
         // Stergerea tarii corespunzatoare id-ului

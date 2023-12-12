@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.module.ResolutionException;
 import java.util.*;
 
 @RestController
@@ -23,13 +24,13 @@ public class CitiesController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         try {
-            Cities city = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"), Double.valueOf(map.get("lat")),
+            Cities city = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"),
+                    Double.valueOf(map.get("lat")),
                     Double.valueOf(map.get("lon")));
 
             Integer resultId = citiesService.addCity(city);
             return UtilsHw.mapId(resultId);
-        }
-        catch(NumberFormatException nfe) {
+        } catch (NumberFormatException nfe) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -61,13 +62,18 @@ public class CitiesController {
                     Double.parseDouble(map.get("lat")), Double.parseDouble(map.get("lon")));
             updatedCity.setId(id);
 
-            if (citiesService.updateEntryById(updatedCity))
+            Integer result = citiesService.updateEntryById(updatedCity);
+            if (result == 1)
                 return new ResponseEntity<>("City updated successfully.", HttpStatus.OK);
-            else
-                return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
-        }
-        catch(NumberFormatException nfe){
-            return new ResponseEntity<>("Wrong format of parameters.",HttpStatus.BAD_REQUEST);
+            else {
+                if (result == 0)
+                    return new ResponseEntity<>("City not found.", HttpStatus.NOT_FOUND);
+                else
+                    return new ResponseEntity<>("Conflict in update, pair already exists.", HttpStatus.CONFLICT);
+            }
+
+        } catch (NumberFormatException nfe) {
+            return new ResponseEntity<>("Wrong format of parameters.", HttpStatus.BAD_REQUEST);
         }
     }
 

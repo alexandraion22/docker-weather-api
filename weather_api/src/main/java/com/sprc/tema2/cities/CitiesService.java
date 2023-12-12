@@ -4,9 +4,14 @@ import java.util.List;
 
 public interface CitiesService {
     Integer addCity(Cities city);
+
     List<Cities> getCities();
+
     List<Cities> getCitiesByCountryId(Integer id);
-    boolean updateEntryById(Cities updatedCity);
+
+    Integer updateEntryById(Cities updatedCity);
+
     boolean deleteEntryById(Integer id);
+
     Cities getEntryById(Integer id);
 }

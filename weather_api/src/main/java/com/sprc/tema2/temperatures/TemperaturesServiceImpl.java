@@ -109,20 +109,28 @@ public class TemperaturesServiceImpl implements TemperaturesService {
     }
 
     @Override
-    public boolean updateEntryById(Temperatures updateTemperature) {
+    public Integer updateEntryById(Temperatures updateTemperature) {
         Temperatures temperatureForId = temperaturesRepository.findById(updateTemperature.getId());
 
-        if(temperatureForId==null)
-            return false;
+        if (temperatureForId == null)
+            return 0;
 
+        if (citiesService.getEntryById(updateTemperature.getId()) != null)
+            return 0;
 
+        updateTemperature.setTimestamp(temperatureForId.getTimestamp());
         /*
-         * Verifica daca deja exista alta intrare cu (idTara,numeOras) in
+         * Verifica daca deja exista alta intrare cu (idOras,timestamp) in
          * care se modifica (daca se modifica) numele sau idTara pentru id-ul specificat
          */
-        updateTemperature.setTimestamp(temperatureForId.getTimestamp());
+        if (!temperatureForId.getIdOras().equals(updateTemperature.getIdOras())
+                || !temperatureForId.getTimestamp().equals(updateTemperature.getTimestamp()))
+            if (temperaturesRepository.findByIdOrasAndTimestamp(updateTemperature.getIdOras(),
+                    updateTemperature.getTimestamp()) != null)
+                return -1;
+
         temperaturesRepository.save(updateTemperature);
-        return true;
+        return 1;
     }
 
     @Override

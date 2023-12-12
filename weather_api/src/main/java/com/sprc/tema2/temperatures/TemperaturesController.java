@@ -3,6 +3,8 @@ package com.sprc.tema2.temperatures;
 import com.sprc.tema2.cities.Cities;
 import com.sprc.utils.UtilsHw;
 
+import main.java.com.sprc.tema2.temperatures.TemperaturesDTO;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -30,9 +32,7 @@ public class TemperaturesController {
                     Double.parseDouble(map.get("valoare")));
             Integer resultId = temperaturesService.addTemperature(temperatures);
             return UtilsHw.mapId(resultId);
-        }
-        catch (NumberFormatException nfe)
-        {
+        } catch (NumberFormatException nfe) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
     }
@@ -88,16 +88,21 @@ public class TemperaturesController {
                         HttpStatus.BAD_REQUEST);
 
             // Creare obiect cu parametrii din request body
-            Temperatures updateTemperature = new Temperatures(Integer.parseInt(map.get("idOras")),Double.parseDouble(map.get("valoare")));
+            Temperatures updateTemperature = new Temperatures(Integer.parseInt(map.get("idOras")),
+                    Double.parseDouble(map.get("valoare")));
             updateTemperature.setId(id);
 
-            if (temperaturesService.updateEntryById(updateTemperature))
+            Integer result = temperaturesService.updateEntryById(updateTemperature);
+            if (result == 1)
                 return new ResponseEntity<>("Temperature updated successfully.", HttpStatus.OK);
-            else
-                return new ResponseEntity<>("Temperature not found.", HttpStatus.NOT_FOUND);
-        }
-        catch(NumberFormatException nfe){
-            return new ResponseEntity<>("Wrong format of parameters.",HttpStatus.BAD_REQUEST);
+            else {
+                if (result == 0)
+                    return new ResponseEntity<>("Temperature not found.", HttpStatus.NOT_FOUND);
+                else
+                    return new ResponseEntity<>("Conflict in update, pair already exists.", HttpStatus.CONFLICT);
+            }
+        } catch (NumberFormatException nfe) {
+            return new ResponseEntity<>("Wrong format of parameters.", HttpStatus.BAD_REQUEST);
         }
     }
 
