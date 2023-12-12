@@ -1,9 +1,6 @@
 package com.sprc.tema2.temperatures;
 
-import com.sprc.tema2.cities.Cities;
 import com.sprc.utils.UtilsHw;
-
-import main.java.com.sprc.tema2.temperatures.TemperaturesDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
