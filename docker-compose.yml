@@ -11,6 +11,9 @@ services:
       MONGO_INITDB_DATABASE: $MONGODB_DATABASE
     ports:
       - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+    networks:
+      - database_dbadmin
+      - api_database
     volumes:
       - db:/data/db
 
@@ -22,20 +25,20 @@ services:
     env_file: ./.env
     ports:
       - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    networks:
+      - api_database
     environment:
       SPRING_APPLICATION_JSON: '{
         "spring.data.mongodb.uri" : "mongodb://$MONGODB_USER:$MONGODB_PASSWORD@mongo_db:$MONGODB_DOCKER_PORT/$MONGODB_DATABASE?authSource=admin"
         }'
-    volumes:
-      - .m2:/root/.m2
-    stdin_open: true
-    tty: true
 
   mongo_express:
     image: mongo-express
     restart: unless-stopped
     ports:
       - $MONGO_EXPRESS_LOCAL_PORT:$MONGO_EXPRESS_DOCKER_PORT
+    networks:
+      - database_dbadmin
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGODB_USER
       ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGODB_PASSWORD
@@ -45,3 +48,9 @@ services:
 
 volumes:
   db:
+
+networks:
+  api_database:
+    driver: bridge
+  database_dbadmin:
+    driver: bridge
