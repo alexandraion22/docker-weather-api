@@ -24,9 +24,9 @@ public class CitiesController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 
         try {
-            Cities city = new Cities(Integer.valueOf(map.get("idTara")), map.get("nume"),
-                    Double.valueOf(map.get("lat")),
-                    Double.valueOf(map.get("lon")));
+            Cities city = new Cities(Integer.parseInt(map.get("idTara")), map.get("nume"),
+                    Double.parseDouble(map.get("lat")),
+                    Double.parseDouble(map.get("lon")));
 
             Integer resultId = citiesService.addCity(city);
             return UtilsHw.mapId(resultId);
