@@ -41,7 +41,7 @@ Implementarea mai exacta a fiecarei functii este detaliata in comentarii.
 Colectiile au fost create conform cerintei, contin exact campurile din cerinta si constangerile
 de unicitate specificate.
 
-**IMPORTANT** Colectiile `countries`, `cities` si `temperatures` se pot gasi in `weather_db`. Restul
+**IMPORTANT** - Colectiile `countries`, `cities` si `temperatures` se pot gasi in `weather_db`. Restul
 colectiilor au fost create automat de MongoDB (ex. colectii in care se salveaza automat detalii despre
 utilizatori sau sesiune) si pot fi ignorate.
 
@@ -97,8 +97,7 @@ Mi-a placut foarte mult aceasta tema. Am vrut mereu sa invat mai mult despre Doc
 ajutat (pe langa laboratoare si curs). A fost foarte interesant sa vad cat de usor se poate crea o baza de date local
 (utilizasem doar MongoDB pe server remote pana la aceasta tema).
 Am realizat tema conform tuturor specificatiilor din cerinta, a ceea ce a fost postat pe forum si a ce am mai
-intrebat la laboratorul de SPRC (ex. good practices pentru Docker si API). A fost putin stresant pentru ca nu
-erau mentionate absolut toate constrangerile in cerinta , dar toate intrebarile pe care le-am avut au primit raspuns.
+intrebat la laboratorul de SPRC (ex. good practices pentru Docker si API).
 
 ## Referinte
 
