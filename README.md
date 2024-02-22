@@ -5,8 +5,6 @@
 - Nume : `Ion Alexandra Ana-Maria`
 - Grupa : `341C1`
 - Timp de lucru :`~ 40 de ore`
-- Sleep days : `2`
-- Recomand citirea README-ului in formatul grafic corespunzator :)
 
 ## Tehnologiile utilizate
 
