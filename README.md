@@ -1,18 +1,18 @@
 # Tema 2 SPRC - Microservicii & Docker
 
-## Realizarea temei
+## Realizarea Temei
 
 - Nume : `Ion Alexandra Ana-Maria`
 - Grupa : `341C1`
 - Timp de lucru :`~ 40 de ore`
 
-## Tehnologiile utilizate
+## Tehnologiile Utilizate
 
 - REST API - `Java Spring Boot`
 - Baza de date - `MongoDB`
 - Utilitar de gestiune al bazelor de date - `Mongo Express`
 
-## Rularea temei
+## Rularea Temei
 
 ### Testare
 
@@ -47,14 +47,14 @@ utilizatori sau sesiune) si pot fi ignorate.
 
 ## Observatii
 
-### Stergerea in cascada
+### Stergerea in Cascada
 
 Dupa cum a fost precizat in [aceasta postare de pe forum](https://curs.upb.ro/2023/mod/forum/discuss.php?d=1799),
 odata cu stergerea tarilor/oraselor din colectii, se realizeaza stergerea in cascada: daca stergem o tara, mai intai
 stergem toate orasele corespunzatoare id-ului tarii si temperaturile corespunzatoare oraselor tarii, iar dupa aceea este
 stearsa tara din baza de date, de asemenea, daca stergem un oras, se sterg si toate temperaturile corespunzatoare.
 
-### Update temperature
+### Update Temperature
 
 Pentru metoda de `PUT/TEMPERATURE` am optat pentru a nu modifica timestamp-ul, deoarece
 m-am gandit ca asa ar fi cel mai logic. M-am gandit de exemplu ca am dori sa corectam anumite
@@ -71,13 +71,13 @@ PathVaribile, se verifica automat daca este bad request.
 Asa cum a fost precizat in [aceasta postare de pe forum](https://curs.upb.ro/2023/mod/forum/discuss.php?d=1777),
 am crescut precizia timestamp-ului pana la ordinul miimilor de secunda.
 
-### Multi-Stage build
+### Multi-Stage Build
 
 Am intrebat in cadrul laboratorului legat de practici bune pentru build-ul unui proiect in Java
 si am inteles ca cel mai ok din punct de vedere al securitatii si corectitudinii, asa ca am studiat
 diferite moduri de a face acest lucru si am implementat.
 
-### Generate sequence
+### Generate Sequence
 
 Dat fiind faptul ca id-ul generat automat de catre MongoDB este de forma unui String, am optat
 pentru metoda generateSequence (prin care practic retin in alta colectie utimul id intreg alocat in cele
@@ -85,7 +85,7 @@ pentru metoda generateSequence (prin care practic retin in alta colectie utimul 
 cu care se asigura atomicitatea setarii urmatorului id. Astfel, prin utilizarea acestei metode sunt generate
 id-uri noi numere intregi, incepand de la 1, in ordine crescatoare.
 
-### Volum Baza de date
+### Volum Baza de Date
 
 Pentru a putea persista datele intre sesiuni, pentru baza de date este creat un volum, astfel,
 chiar daca rulaam `docker compose down`, datele din sesiunea finalizata sunt inca salvate pentru
