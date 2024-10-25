@@ -91,14 +91,6 @@ Pentru a putea persista datele intre sesiuni, pentru baza de date este creat un 
 chiar daca rulaam `docker compose down`, datele din sesiunea finalizata sunt inca salvate pentru
 sesiunea urmatoare.
 
-## Feedback Tema
-
-Mi-a placut foarte mult aceasta tema. Am vrut mereu sa invat mai mult despre Docker si aceasta tema chiar m-a
-ajutat (pe langa laboratoare si curs). A fost foarte interesant sa vad cat de usor se poate crea o baza de date local
-(utilizasem doar MongoDB pe server remote pana la aceasta tema).
-Am realizat tema conform tuturor specificatiilor din cerinta, a ceea ce a fost postat pe forum si a ce am mai
-intrebat la laboratorul de SPRC (ex. good practices pentru Docker si API).
-
 ## Referinte
 
 - [Mongo-express Docker](https://hub.docker.com/_/mongo-express)
